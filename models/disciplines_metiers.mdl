@@ -1,0 +1,46 @@
+<?php
+require_once(CORE.'model.php');
+
+class Disciplines_metiersModel extends Model{
+
+	//Attributs
+	protected $id;
+	protected $discipline_id;
+	protected $metier_id;
+
+	//Constructeur
+	public function __construct($id = null){
+		//nom de la table dans la base de donnée
+		$this->table = "disciplines_metiers";
+		//nom du champs de la clé primaire
+		$this->primary = "id";
+		//nom du champ de création
+		$this->field_create = null;
+		//nom du champ de modification
+		$this->field_update = null;
+		//description des liens de cette table
+		$this->fkey = [
+		//clé étrangère => table référence
+		'discipline_id' => 'disciplines',
+		'metier_id' => 'metiers'
+		];
+		$this->ftable = [
+		//table référence => propriété correspondante
+		];
+		$this->display = "id";
+		parent::__construct($id);
+	}
+
+	//Getters
+	public function getid(){return $this->id;}
+	public function getdiscipline_id(){return $this->discipline_id;}
+	public function getmetier_id(){return $this->metier_id;}
+
+	//Setters
+	public function setid($val){$this->id=$val;}
+	public function setdiscipline_id($val){$this->discipline_id=$val;}
+	public function setmetier_id($val){$this->metier_id=$val;}
+
+}
+
+?>

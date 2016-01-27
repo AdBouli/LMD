@@ -1,0 +1,47 @@
+<?php
+require_once(CORE.'model.php');
+
+class RightsModel extends Model{
+
+	//Attributs
+	protected $id;
+	protected $universite_id;
+	protected $user_id;
+
+	//Constructeur
+	public function __construct($id = null){
+		//nom de la table dans la base de donnée
+		$this->table = "rights";
+		//nom du champs de la clé primaire
+		$this->primary = "id";
+		//nom du champ de création
+		$this->field_create = null;
+		//nom du champ de modification
+		$this->field_update = null;
+		//description des liens de cette table
+		$this->fkey = [
+		//clé étrangère => table référence
+		'universite_id' => 'universites',
+		'user_id' => 'users'
+		];
+		$this->ftable = [
+	  //table référence => propriété correspondante
+		];
+		$this->display = "id";
+		parent::__construct($id);
+	}
+
+	//Getters
+	public function getid(){return $this->id;}
+	public function getuniversite_id(){return $this->universite_id;}
+	public function getuser_id(){return $this->user_id;}
+
+	//Setters
+	public function setid($val){$this->id=$val;}
+	public function setuniversite_id($val){$this->universite_id=$val;}
+	public function setuser_id($val){$this->user_id=$val;}
+
+
+}
+
+?>

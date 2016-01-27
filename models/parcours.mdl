@@ -1,0 +1,63 @@
+<?php
+require_once(CORE.'model.php');
+
+class ParcoursModel extends Model{
+
+	//Attributs
+	protected $id;
+	protected $nom;
+	protected $description;
+	protected $insertion;
+	protected $mention_id;
+	protected $pro;
+	protected $created;
+	protected $modified;
+
+	//Constructeur
+	public function __construct($id = null){
+		//nom de la table dans la base de donnée
+		$this->table = "parcours";
+		//nom du champs de la clé primaire
+		$this->primary = "id";
+		//nom du champ de création
+		$this->field_create = "created";
+		//nom du champ de modification
+		$this->field_update = "modified";
+		//description des liens de cette table
+		$this->fkey = [
+		//clé étrangère => table référence
+		'mention_id' => 'mentions'
+		];
+		$this->ftable = [
+		//table référence => propriété correspondante
+		"metiers_parcours" => "parcour_id",
+		"parcours_parcours" => "parcour_id1",
+		"parcours_ues" => "parcour_id"
+		];
+		$this->display = "nom";
+		parent::__construct($id);
+	}
+
+	//Getters
+	public function getid(){return $this->id;}
+	public function getnom(){return $this->nom;}
+	public function getdescription(){return $this->description;}
+	public function getinsertion(){return $this->insertion;}
+	public function getmention_id(){return $this->mention_id;}
+	public function getpro(){return $this->pro;}
+	public function getcreated(){return $this->created;}
+	public function getmodified(){return $this->modified;}
+
+	//Setters
+	public function setid($val){$this->id=$val;}
+	public function setnom($val){$this->nom=$val;}
+	public function setdescription($val){$this->description=$val;}
+	public function setinsertion($val){$this->insertion=$val;}
+	public function setmention_id($val){$this->mention_id=$val;}
+	public function setpro($val){$this->pro=$val;}
+	public function setcreated($val){$this->created=$val;}
+	public function setmodified($val){$this->modified=$val;}
+
+}
+
+?>

@@ -1,0 +1,58 @@
+<?php
+require_once(CORE.'model.php');
+
+class Sections_uesModel extends Model{
+
+	//Attributs
+	protected $id;
+	protected $ue_id;
+	protected $section_id;
+	protected $hcours;
+	protected $htd;
+	protected $htp;
+	protected $hetu;
+
+	//Constructeur
+	public function __construct($id = null){
+		//nom de la table dans la base de donnée
+		$this->table = "sections_ues";
+		//nom du champs de la clé primaire
+		$this->primary = "id";
+		//nom du champ de création
+		$this->field_create = null;
+		//nom du champ de modification
+		$this->field_update = null;
+		//description des liens de cette table
+		$this->fkey = [
+		//clé étrangère => table référence
+		'ue_id' => 'ues',
+		'section_id' => 'sections'
+		];
+		$this->ftable = [
+	  //table référence => propriété correspondante
+		];
+		$this->display = "id";
+		parent::__construct($id);
+	}
+
+	//Getters
+	public function getid(){return $this->id;}
+	public function getue_id(){return $this->ue_id;}
+	public function getsection_id(){return $this->section_id;}
+	public function gethcours(){return $this->hcours;}
+	public function gethtd(){return $this->htd;}
+	public function gethtp(){return $this->htp;}
+	public function gethetu(){return $this->hetu;}
+
+	//Setters
+	public function setid($val){$this->id=$val;}
+	public function setue_id($val){$this->ue_id=$val;}
+	public function setsection_id($val){$this->section_id=$val;}
+	public function sethcours($val){$this->hcours=$val;}
+	public function sethtd($val){$this->htd=$val;}
+	public function sethtp($val){$this->htp=$val;}
+	public function sethetu($val){$this->hetu=$val;}
+
+}
+
+?>

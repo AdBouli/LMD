@@ -1,0 +1,101 @@
+<?php
+require_once(CORE.'model.php');
+
+class MetiersModel extends Model{
+
+	//Attributs
+	protected $id;
+	protected $synonid;
+	protected $nom;
+	protected $accroche;
+	protected $description;
+	protected $formation;
+	protected $formatdiplome;
+	protected $formathorsregion;
+	protected $competences;
+	protected $compliste;
+	protected $compemploi;
+	protected $emploidemain;
+	protected $emploichiffre;
+	protected $savezvous;
+	protected $secteur_id;
+	protected $access_L;
+	protected $access_M;
+	protected $access_D;
+	protected $created;
+	protected $modified;
+	protected $saisie;
+
+	//Constructeur
+	public function __construct($id = null){
+		//nom de la table dans la base de donnée
+		$this->table = "metiers";
+		//nom du champs de la clé primaire
+		$this->primary = "id";
+		//nom du champ de création
+		$this->field_create = "created";
+		//nom du champ de modification
+		$this->field_update = "modified";
+		//description des liens de cette table
+		$this->fkey = [
+		//clé étrangère => table référence
+		'secteur_id' => 'secteurs'
+		];
+		$this->ftable = [
+		//table référence => propriété correspondante
+		"disciplines_metiers" => "metier_id",
+		"metiers_parcours" => "metier_id"
+		];
+		$this->display = "nom";
+		parent::__construct($id);
+	}
+
+	//Getters
+	public function getid(){return $this->id;}
+	public function getsynonid(){return $this->synonid;}
+	public function getnom(){return $this->nom;}
+	public function getaccroche(){return $this->accroche;}
+	public function getdescription(){return $this->description;}
+	public function getformation(){return $this->formation;}
+	public function getformatdiplome(){return $this->formatdiplome;}
+	public function getformathorsregion(){return $this->formathorsregion;}
+	public function getcompetences(){return $this->competences;}
+	public function getcompliste(){return $this->compliste;}
+	public function getcompemploi(){return $this->compemploi;}
+	public function getemploidemain(){return $this->emploidemain;}
+	public function getemploichiffre(){return $this->emploichiffre;}
+	public function getsavezvous(){return $this->savezvous;}
+	public function getsecteur_id(){return $this->secteur_id;}
+	public function getaccess_L(){return $this->access_L;}
+	public function getaccess_M(){return $this->access_M;}
+	public function getaccess_D(){return $this->access_D;}
+	public function getcreated(){return $this->created;}
+	public function getmodified(){return $this->modified;}
+	public function getsaisie(){return $this->saisie;}
+
+	//Setters
+	public function setid($val){$this->id=$val;}
+	public function setsynonid($val){$this->synonid=$val;}
+	public function setnom($val){$this->nom=$val;}
+	public function setaccroche($val){$this->accroche=$val;}
+	public function setdescription($val){$this->description=$val;}
+	public function setformation($val){$this->formation=$val;}
+	public function setformatdiplome($val){$this->formatdiplome=$val;}
+	public function setformathorsregion($val){$this->formathorsregion=$val;}
+	public function setcompetences($val){$this->competences=$val;}
+	public function setcompliste($val){$this->compliste=$val;}
+	public function setcompemploi($val){$this->compemploi=$val;}
+	public function setemploidemain($val){$this->emploidemain=$val;}
+	public function setemploichiffre($val){$this->emploichiffre=$val;}
+	public function setsavezvous($val){$this->savezvous=$val;}
+	public function setsecteur_id($val){$this->secteur_id=$val;}
+	public function setaccess_L($val){$this->access_L=$val;}
+	public function setaccess_M($val){$this->access_M=$val;}
+	public function setaccess_D($val){$this->access_D=$val;}
+	public function setcreated($val){$this->created=$val;}
+	public function setmodified($val){$this->modified=$val;}
+	public function setsaisie($val){$this->saisie=$val;}
+
+}
+
+?>

@@ -1,0 +1,55 @@
+<?php
+require_once(CORE.'model.php');
+
+class SectionsModel extends Model{
+
+	//Attributs
+	protected $id;
+	protected $nom;
+	protected $numero;
+	protected $discipline_id;
+	protected $created;
+	protected $modified;
+
+	//Constructeur
+	public function __construct($id = null){
+		//nom de la table dans la base de donnée
+		$this->table = "sections";
+		//nom du champs de la clé primaire
+		$this->primary = "id";
+		//nom du champ de création
+		$this->field_create = "created";
+		//nom du champ de modification
+		$this->field_update = "modified";
+		//description des liens de cette table
+		$this->fkey = [
+		//clé étrangère => table référence
+		'discipline_id' => 'disciplines'
+		];
+		$this->ftable = [
+	  //table référence => propriété correspondante
+	  "sections_ues" => "section_id"
+		];
+		$this->display = "nom";
+		parent::__construct($id);
+	}
+
+	//Getters
+	public function getid(){return $this->id;}
+	public function getnom(){return $this->nom;}
+	public function getnumero(){return $this->numero;}
+	public function getdiscipline_id(){return $this->discipline_id;}
+	public function getcreated(){return $this->created;}
+	public function getmodified(){return $this->modified;}
+
+	//Setters
+	public function setid($val){$this->id=$val;}
+	public function setnom($val){$this->nom=$val;}
+	public function setnumero($val){$this->numero=$val;}
+	public function setdiscipline_id($val){$this->discipline_id=$val;}
+	public function setcreated($val){$this->created=$val;}
+	public function setmodified($val){$this->modified=$val;}
+
+}
+
+?>

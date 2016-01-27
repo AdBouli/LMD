@@ -1,0 +1,57 @@
+<?php
+require_once(CORE.'model.php');
+
+class Parcours_uesModel extends Model{
+
+	//Attributs
+	protected $id;
+	protected $parcour_id;
+	protected $ue_id;
+	protected $semestre_id;
+	protected $type_id;
+	protected $regroupement;
+
+	//Constructeur
+	public function __construct($id = null){
+		//nom de la table dans la base de donnée
+		$this->table = "parcours_ues";
+		//nom du champs de la clé primaire
+		$this->primary = "id";
+		//nom du champ de création
+		$this->field_create = null;
+		//nom du champ de modification
+		$this->field_update = null;
+		//description des liens de cette table
+		$this->fkey = [
+		//clé étrangère => table référence
+		'parcour_id' => 'parcours',
+		'ue_id' => 'ues',
+		'semestre_id' => 'semestres',
+		'type_id' => 'types'
+		];
+		$this->ftable = [
+		//table référence => propriété correspondante
+		];
+		$this->display = "id";
+		parent::__construct($id);
+	}
+
+	//Getters
+	public function getid(){return $this->id;}
+	public function getparcour_id(){return $this->parcour_id;}
+	public function getue_id(){return $this->ue_id;}
+	public function getsemestre_id(){return $this->semestre_id;}
+	public function gettype_id(){return $this->type_id;}
+	public function getregroupement(){return $this->regroupement;}
+
+	//Setters
+	public function setid($val){$this->id=$val;}
+	public function setparcour_id($val){$this->parcour_id=$val;}
+	public function setue_id($val){$this->ue_id=$val;}
+	public function setsemestre_id($val){$this->semestre_id=$val;}
+	public function settype_id($val){$this->type_id=$val;}
+	public function setregroupement($val){$this->regroupement=$val;}
+
+}
+
+?>

@@ -1,0 +1,251 @@
+<?php
+require_once(CORE.'controller.php');
+
+
+class CRUD extends Controller{
+
+	use pagineer;
+	use formator;
+
+	protected $className;
+
+	function __construct(){
+		parent::__construct();
+		$this->layout = 'admin';
+		$this->className = get_class($this);
+		$className = $this->className;
+		$this->loadModel($className);
+		$data['primary'] = $this->$className->primary;
+		$data['display_field'] = $this->$className->display;
+		$this->set($data);
+	}
+
+	function index($page = '5-1', $tri = null, $sens = 0){
+		$data = array();
+		$className = $this->className;
+		//tri
+		if($tri == ""){ $tri = $this->$className->display;}
+		$orderby = ($sens == 0) ? $tri.' ASC' : $tri.' DESC';
+		//requète
+		$all = $this->$className->selectAll($orderby);
+		//pagination
+		$data['display'] = $this->pagination($all, $page, $className.'/index/NUMPAGE/'.$tri.'/'.$sens);
+		//remplacement des données (lisibilité)
+		if(empty($data['display']['result'])) { $data['display']['result'] = array(); }
+		foreach ($data['display']['result'] as $key => $value) {
+			$data['display']['result'][$key] = $this->remplace_datas($data['display']['result'][$key]);
+			$data['display']['result'][$key] = $this->shortcut($data['display']['result'][$key]);		}
+		$data['order'] = ($sens == 0) ? $tri : "";
+		//
+		$data['page'] = 'index';
+		$this->set($data);
+		$this->render('crud');
+	}
+
+	function search($query="", $page='5-1', $tri = null, $sens = 0){
+		$data = array();
+		$className = $this->className;
+		if($tri == ""){ $tri = $this->$className->display;}
+		//
+		if($query == "" && !empty($this->post['query'])){
+			$data['query'] = $this->post['query'];
+		}else{
+			$data['query'] = $query;
+		}
+		//
+		$conditions = array();
+		$res_query = explode(' ', $data['query']);
+		//construction du where de la requète
+		foreach ($res_query as $value) {
+			$conditions[] = $this->$className->display.' LIKE \'%'.$value.'%\'';
+		}
+		//tri
+		$orderby = ($sens == 0) ? $tri.' ASC' : $tri.' DESC';
+		//requète
+		$result = $this->$className->find($conditions, $orderby);
+		//si il y a des résultats
+		if(!empty($result)){
+			//pagination
+			$data['display'] = $this->pagination($result, $page, $className.'/search/'.$query.'/NUMPAGE/'.$tri.'/'.$sens);
+			//remplacement des données (lisibilité)
+			foreach ($data['display']['result'] as $key => $value) {
+				$data['display']['result'][$key] = $this->remplace_datas($data['display']['result'][$key]);
+			}
+		}else {
+			//sinon
+			$data['display']['result'] = 'Aucun résultat ne correspond à votre recherche.';
+		}
+		$data['order'] = ($sens == 0) ? $tri : "";
+		//
+		$data['page'] = 'index';
+		$this->set($data);
+		$this->render('crud');
+	}
+
+	function read($id){
+		$data = array();
+		$className = $this->className;
+		//
+		$this->loadModel($className, $id);
+		$data['datas'] = $this->$className->toTable();
+		$data['datas'] = $this->remplace_datas($data['datas']);
+		//
+		$data['rels'] = $this->$className->Links;
+		//prvar($data['rels']);
+		//
+		$data['page'] = 'read';
+		$this->set($data);
+		$this->render('crud');
+	}
+
+	function create(){
+		$data = array();
+		$className = $this->className;
+		//
+		if(!empty($this->post)){
+			$this->loadModel($className);
+			//setting des datas
+			foreach ($this->post as $key => $value) {
+				$setter = 'set'.$key;
+				if($key == 'password'){
+					$value = md5($value);
+				}
+				$this->$className->$setter($value);
+			}
+			//creation
+			$this->msg_operation($this->$className->save());
+		}
+		$this->generateLists();
+		//
+		$data['page'] = 'create';
+		$this->set($data);
+		$this->render('crud');
+	}
+
+	function update($id){
+		$data = array();
+		$className = $this->className;
+		$this->loadModel($className, $id);
+		if(!empty($this->post)){
+			//setting des datas
+			foreach ($this->post as $key => $value) {
+				$setter = 'set'.$key;
+				if($key == 'password'){
+					$value = md5($value);
+				}
+				$this->$className->$setter($value);
+			}
+			//creation
+			$this->msg_operation($this->$className->save());
+		}
+		//datas remplissage inputs
+		$data['datas'] = $this->$className->toTable();
+		$this->generateLists();
+		//
+		$data['page'] = 'update';
+		$this->set($data);
+		$this->render('crud');
+	}
+
+	function delete($id){
+		$data = array();
+		$className = $this->className;
+		$this->loadModel($className, $id);
+		//
+		$data['datas'] = $this->$className->toTable();
+		if(!empty($this->post)){
+			//suppression
+			$this->msg_operation($this->$className->delete());
+		}
+		$data['page'] = 'delete';
+		$this->set($data);
+		$this->render('crud');
+	}
+
+
+
+	//
+	//FUNCTIONS INTERMEDIAIRES
+	//
+
+	//lance l'outil pagination
+	function pagination($datas, $size_page, $url){
+		//datas: tableau des données
+		//size_page: infos au format 'size-page'
+		//$url: racine de l'url du navigateur de page
+		$tmp = explode('-', $size_page);
+		$size = $tmp[0];
+		$page = $tmp[1];
+		if(!empty($_POST['size'])){
+			$size = $_POST['size'];
+		}
+		//retourne un tableau de 2 cases: 'result' avec les données de la page courante, et 'pagination' le navigateur de pages
+		return $this->generate_pagin($datas, $size, $page, $url);
+	}
+
+	//remplace les données par des données lisible par l'utilisateur
+	function remplace_datas($datas){
+		$className = $this->className;
+		//gestion clés étrangères
+		foreach ($this->$className->fkey as $key => $value) {
+			if($datas[$key] != 0){
+				$this->loadModel($value);
+				$val_display = @$this->$value->find(array($this->$value->primary.' = \''.$datas[$key].'\''))[0][$this->$value->display];
+				$datas[$key] = array($value, $datas[$key], $val_display);
+			}
+		}
+		//gestion dates
+		if ($this->$className->field_create != null){
+			$datas[$this->$className->field_create] = $this->remplace_datetime($datas[$this->$className->field_create]);
+		}
+		if ($this->$className->field_update != null){
+			$datas[$this->$className->field_update] = $this->remplace_datetime($datas[$this->$className->field_update]);
+		}
+		return $datas;
+	}
+
+	//Coupe les chaine de caractère de plus de 100 caractère pour une visibilité dans un tableau
+	function shortcut($datas){
+		$className = $this->className;
+		//
+		foreach ($datas as $key => $value) {
+			if(is_string($value)){
+				$long = strlen($value);
+				if($long>100){
+					$datas[$key] = substr($value, -$long, 100).'...';
+				}	
+			}
+		}
+		//
+		return $datas;
+
+	}
+
+	//génération du message utilisateur après opération sur la base de donnée
+	function msg_operation($result){
+		if($result>=1){
+			$data['msg'] = '<div class="success callout"> Opération effectuée avec succès!</div>';
+		}else{
+			//echec
+			$data['msg'] = '<div class="alert callout"> Echec de l\'opération.</div>';
+		}
+		$this->vars = array_merge($this->vars, $data);
+	}
+
+	//création des listes des liens du modèles
+	function generateLists(){
+		$data = array();
+		$className = $this->className;
+		foreach ($this->$className->fkey as $key => $value){
+			$this->loadModel($value);
+			$key = 'list_'.$key;
+			$data[$key] = $this->$value->listAll();
+		}
+		$this->vars = array_merge($this->vars, $data);
+	}
+	
+
+}
+
+
+?>

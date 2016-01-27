@@ -1,0 +1,65 @@
+<?php
+require_once(CORE.'model.php');
+
+class PersonnesModel extends Model{
+
+	//Attributs
+	protected $id;
+	protected $nom;
+	protected $prenom;
+	protected $mail;
+	protected $section_id;
+	protected $statut_id;
+	protected $universite_id;
+	protected $created;
+	protected $modified;
+
+	//Constructeur
+	public function __construct($id = null){
+		//nom de la table dans la base de donnée
+		$this->table = "personnes";
+		//nom du champs de la clé primaire
+		$this->primary = "id";
+		//nom du champ de création
+		$this->field_create = "created";
+		//nom du champ de modification
+		$this->field_update = "modified";
+		//description des liens de cette table
+		$this->fkey = [
+		//clé étrangère => table référence
+		'section_id' => 'sections',
+		'statut_id' => 'statuts',
+		'universite_id' => 'universites'
+		];
+		$this->ftable = [
+		//table référence => propriété correspondante
+		];
+		$this->display = "nom";
+		parent::__construct($id);
+	}
+
+	//Getters
+	public function getid(){return $this->id;}
+	public function getnom(){return $this->nom;}
+	public function getprenom(){return $this->prenom;}
+	public function getmail(){return $this->mail;}
+	public function getsection_id(){return $this->section_id;}
+	public function getstatut_id(){return $this->statut_id;}
+	public function getuniversite_id(){return $this->universite_id;}
+	public function getcreated(){return $this->created;}
+	public function getmodified(){return $this->modified;}
+
+	//Setters
+	public function setid($val){$this->id=$val;}
+	public function setnom($val){$this->nom=$val;}
+	public function setprenom($val){$this->prenom=$val;}
+	public function setmail($val){$this->mail=$val;}
+	public function setsection_id($val){$this->section_id=$val;}
+	public function setstatut_id($val){$this->statut_id=$val;}
+	public function setuniversite_id($val){$this->universite_id=$val;}
+	public function setcreated($val){$this->created=$val;}
+	public function setmodified($val){$this->modified=$val;}
+
+}
+
+?>

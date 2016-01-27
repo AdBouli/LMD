@@ -1,0 +1,13 @@
+<?php
+require_once(CTRL.'crud.ctrl');
+
+class Users extends CRUD{
+
+	function __construct(){
+		parent::__construct();
+	}
+
+}
+
+
+?>

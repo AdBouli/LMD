@@ -1,0 +1,46 @@
+<?php
+require_once(CORE.'model.php');
+
+class Parcours_parcoursModel extends Model{
+
+	//Attributs
+	protected $id;
+	protected $parcour_id1;
+	protected $parcour_id2;
+
+	//Constructeur
+	public function __construct($id = null){
+		//nom de la table dans la base de donnée
+		$this->table = "parcours_parcours";
+		//nom du champs de la clé primaire
+		$this->primary = "id";
+		//nom du champ de création
+		$this->field_create = null;
+		//nom du champ de modification
+		$this->field_update = null;
+		//description des liens de cette table
+		$this->fkey = [
+		//clé étrangère => table référence
+		'parcour_id2' => 'parcours',
+		'parcour_id1' => 'parcours'
+		];
+		$this->ftable = [
+		//table référence => propriété correspondante
+		];
+		$this->display = "id";
+		parent::__construct($id);
+	}
+
+	//Getters
+	public function getid(){return $this->id;}
+	public function getparcour_id1(){return $this->parcour_id1;}
+	public function getparcour_id2(){return $this->parcour_id2;}
+
+	//Setters
+	public function setid($val){$this->id=$val;}
+	public function setparcour_id1($val){$this->parcour_id1=$val;}
+	public function setparcour_id2($val){$this->parcour_id2=$val;}
+
+}
+
+?>

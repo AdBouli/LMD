@@ -1,0 +1,86 @@
+<?php
+require_once(CORE.'model.php');
+
+class UsersModel extends Model{
+
+	//Attributs
+	protected $id;
+	protected $username;
+	protected $password;
+	protected $nom;
+	protected $prenom;
+	protected $email;
+	protected $active;
+	protected $created;
+	protected $modified;
+
+	//Constructeur
+	public function __construct($id = null){
+		//nom de la table dans la base de donnée
+		$this->table = "users";
+		//nom du champs de la clé primaire
+		$this->primary = "id";
+		//nom du champ de création
+		$this->field_create = "created";
+		//nom du champ de modification
+		$this->field_update = "modified";
+		//description des liens de cette table
+		$this->fkey = [
+		//clé étrangère => table référence
+		];
+		$this->ftable = [
+	  //table référence => propriété correspondante
+		];
+		$this->display = "username";
+		parent::__construct($id);
+	}
+
+	//Getters
+	public function getid(){return $this->id;}
+	public function getusername(){return $this->username;}
+	public function getpassword(){return $this->password;}
+	public function getnom(){return $this->nom;}
+	public function getprenom(){return $this->prenom;}
+	public function getemail(){return $this->email;}
+	public function getactive(){return $this->active;}
+	public function getcreated(){return $this->created;}
+	public function getmodified(){return $this->modified;}
+
+	//Setters
+	public function setid($val){$this->id=$val;}
+	public function setusername($val){$this->username=$val;}
+	public function setpassword($val){$this->password=$val;}
+	public function setnom($val){$this->nom=$val;}
+	public function setprenom($val){$this->prenom=$val;}
+	public function setemail($val){$this->email=$val;}
+	public function setactive($val){$this->active=$val;}
+	public function setcreated($val){$this->created=$val;}
+	public function setmodified($val){$this->modified=$val;}
+
+
+	//Méthodes spécifiques
+
+	//Connection
+	public function checkUser($login, $pass){
+		$pass = md5($pass);
+		$test = $this->select("SELECT ".$this->primary." FROM ".$this->table." WHERE login LIKE '".$login."' AND password LIKE '".$pass."';");
+		if(empty($test)){
+			$res = false;
+		}else{
+			$res = $test[0][$this->primary];
+		}
+		return $res;
+	}
+
+	//Verif si $value existe dans la colonne $attr
+	public function checkExist($attr, $value){
+		$test = $this->select("SELECT id FROM ".$this->table." WHERE $attr LIKE '$value';");
+		return (empty($test)) ? false : true;
+	}
+
+
+
+
+}
+
+?>

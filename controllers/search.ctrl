@@ -1,0 +1,156 @@
+<?php
+require_once(CORE.'controller.php');
+
+class Search extends Controller{
+
+	use mysql;
+
+	function __construct(){
+		parent::__construct();
+		$this->layout = 'default';
+		//$this->loadModel(get_class($this));
+	}
+
+	function metier(){
+		$data = array();
+		// 
+		// SECTEURS/PARCOURS/DISCIPLINES
+		$this->generateList(array('secteurs', 'parcours', 'disciplines'));
+		//
+		if (!empty($this->post)){
+			$this->loadModel('metier');
+			foreach ($this->post as $key => $value) {
+				$$key = $value;
+			}
+			// SELECT
+			$query = "SELECT distinct m.id, m.nom FROM metiers m INNER JOIN metiers_parcours mp ON m.id = mp.metier_id INNER JOIN discipline_metier ON m.id = dm.metier_id WHERE ";
+			// WHERE
+			$query .= "m.nom like '%$nom_metier%' AND ";
+			if(!empty($secteur)){
+				$query .= "m.secteur_id = '$secteur' AND ";
+			}
+			// PARCOUR
+			$parcours = array_filter(explode("_", $parcours));
+			// les conditions séparés d'un 'AND'
+			foreach ($parcours as $value) {
+				$query .= "mp.parcour_id = '$value' AND ";
+			}
+			// DISCIPLINE
+			$disciplines = array_filter(explode("_", $disciplines));
+			// les conditions séparés d'un 'AND'
+			foreach ($disciplines as $value) {
+				$query .= "dm.discipline_id = '$value AND ";
+			}
+			// supprime le dernier  AND'
+			$query = substr($query, -strlen($query), strlen($query)-4);
+			// ORDER BY
+			$query .= " ORDER BY m.nom ASC";
+			//
+			$this->setResult($query);
+		}
+	}
+
+	function parcour(){
+		$data = array();
+		//
+		//MENTIONS/METIERS/UES
+		$this->generateList(array('mentions','metiers','ues'));
+		//
+		if (!empty($this->post)){
+			$this->loadModel('parcours');
+			foreach ($this->post as $key => $value) {
+				$$key = $value;
+			}
+			// SELECT
+			$query = "SELECT distinct p.id, p.nom FROM parcours p INNER JOIN metiers_parcours mp ON p.id = mp.parcour_id INNER JOIN parcours_ues pu ON p.id = pu.parcour_id WHERE ";
+			// WHERE
+			$query .= "p.nom like '%$nom_parcour%' AND ";
+			if(!empty($mention)){
+				$query .= "p.mention_id = '$mention' AND ";
+			}
+			// METIER
+			$metiers = array_filter(explode("_", $metiers));
+			// Les conditions séparées d'un 'AND'
+			foreach ($metiers as $value) {
+				$query .= "mp.metier_id = '$value' AND ";
+			}
+			// UES
+			$ues = array_filter(explode("_", $ues));
+			// Les conditions séparées d'un 'AND'
+			foreach ($ues as $value) {
+				$query .= "pu.ue_id = '$value' AND ";
+			}
+			// supprime le dernier  AND'
+			$query = substr($query, -strlen($query), strlen($query)-4);
+			// ORDER BY
+			$query .= " ORDER BY p.nom ASC";
+			//
+			$this->setResult($query);
+		}
+		//
+		$this->set($data);
+		$this->render('parcour');
+	}
+
+	function section(){
+		$data = array();
+		//
+		//DISCIPLINES/UES
+		$this->generateList(array('disciplines','ues'));
+		//
+		if(!empty($this->post)){
+			$this->loadModel('sections');
+			foreach ($this->post as $key => $value) {
+				$$key = $value;
+			}
+			//select
+			$query = "SELECT distinct s.id, s.nom FROM sections s INNER JOIN sections_ues su ON s.id = su.section_id WHERE ";
+			//WHERE
+			$query .= "s.nom like '%$nom_section%' AND ";
+			if(!empty($discipline)){
+				$query .= "s.discipline_id = '$discipline' AND ";
+			}
+			// UES
+			$ues = array_filter(explode("_", $ues));
+			// les conditions séparées d'un 'OR'
+			foreach ($ues as $value) {
+				$query .= "su.section_id = '$value' OR ";
+			}
+			// supprime le dernier 'AND'
+			$query = substr($query, -strlen($query), strlen($query)-4);
+			// order by
+			$query .= " ORDER BY s.nom ASC";
+			//
+			$this->setResult($query);			
+		}
+		//
+		$this->set($data);
+		$this->render('section');
+	}
+
+	function generateList($models){
+		$data = array();
+		foreach ($models as $value) {
+			$this->loadModel($value);
+			$key = 'list_'.$value;
+			$data[$key][] = "";
+			$data[$key] = array_merge($data[$key], $this->$value->listAll());
+		}
+		$this->vars = array_merge($this->vars, $data);
+	}
+	
+	function setResult($query){
+		$data['resultStrict'] = $this->select($query);
+		$query = str_replace("AND", "OR", $query);
+		$data['resultApprox'] = $this->select($query);
+		foreach ($data['resultApprox'] as $key => $value) {
+			if(array_key_exists($key, $data['resultStrict'])){
+				unset($data['resultApprox'][$key]);
+			}
+		}
+		$this->vars = array_merge($this->vars, $data);
+	}
+}
+
+
+?>

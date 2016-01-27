@@ -1,0 +1,58 @@
+<?php
+require_once(CORE.'controller.php');
+
+class Home extends Controller{
+
+	use mysql;
+
+	function __construct(){
+		parent::__construct();
+		$this->layout = 'default';
+		//$this->loadModel(get_class($this));
+	}
+
+	function index(){
+		$data = array();
+		//
+		$data['message'] = "Hello World!";
+		//
+		$this->set($data);
+		$this->render('index');
+	}
+
+	function front(){
+		$data = array();
+		//
+		$data['message'] = "Hello World!";
+		//
+		$data['liens'] = array(
+			'search/parcour' => 'Rechercher un parcour'
+		);
+		//
+		$this->set($data);
+		$this->render('index');
+	}
+
+	function back(){
+		$data = array();
+		//
+		$data['message'] = "Hello World!";
+		//
+		$this->layout = 'admin';
+		$this->set($data);
+		$this->render('index');
+	}
+
+	function resetDB(){
+		$fileName = ROOT."datas/sql/lmd2.sql";
+		$file = fopen($fileName, "r");
+		$content = fread($file, filesize($fileName));
+		$this->execute($content);
+	}
+
+
+	
+}
+
+
+?>

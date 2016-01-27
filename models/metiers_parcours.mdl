@@ -1,0 +1,46 @@
+<?php
+require_once(CORE.'model.php');
+
+class Metiers_parcoursModel extends Model{
+
+	//Attributs
+	protected $id;
+	protected $metier_id;
+	protected $parcour_id;
+
+	//Constructeur
+	public function __construct($id = null){
+		//nom de la table dans la base de donnée
+		$this->table = "metiers_parcours";
+		//nom du champs de la clé primaire
+		$this->primary = "id";
+		//nom du champ de création
+		$this->field_create = null;
+		//nom du champ de modification
+		$this->field_update = null;
+		//description des liens de cette table
+		$this->fkey = [
+		//clé étrangère => table référence
+		'metier_id' => 'metiers',
+		'parcour_id' => 'parcours'
+		];
+		$this->ftable = [
+		//table référence => propriété correspondante
+		];
+		$this->display = "id";
+		parent::__construct($id);
+	}
+
+	//Getters
+	public function getid(){return $this->id;}
+	public function getmetier_id(){return $this->metier_id;}
+	public function getparcour_id(){return $this->parcour_id;}
+
+	//Setters
+	public function setid($val){$this->id=$val;}
+	public function setmetier_id($val){$this->metier_id=$val;}
+	public function setparcour_id($val){$this->parcour_id=$val;}
+
+}
+
+?>

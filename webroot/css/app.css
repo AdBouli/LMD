@@ -1,0 +1,88 @@
+/*GENERALITES*/
+html{background-attachment:fixed; background-image: linear-gradient(to bottom, #FFF, #DDF)}
+
+/*MAIN BLOC*/
+.main{
+	display:block;
+	width:auto;
+	margin:auto;
+}
+
+.header{
+	display:block;
+	float:left;
+	width:100%;
+	margin-bottom:20px;
+}
+
+.contents{
+	display:block;
+	float:left;
+	width:100%;
+	margin-bottom:20px;
+	font-family: Verdana;
+}
+
+.footer{
+	display:block;
+	float:left;
+	width:100%;
+}
+
+/*TOP BAR*/
+.top-bar{
+	display:block;
+	float:left;
+	width:100%;
+}
+.top-bar ul{
+	list-style-type: none;
+	margin:0;
+}
+.top-bar li{
+	padding: 5px;
+	float:left;
+}
+
+.top-bar li:hover{
+	background-color: #FFF;
+}
+
+.top-bar a{
+	text-decoration: none;
+	font-weight: bold;
+}
+
+.top-bar .left li {
+	border-left:solid 1px grey;
+}
+
+.top-bar .right li {
+	border-right:solid 1px grey;
+}
+
+/*MENU*/
+.menu .element{
+	border-bottom: solid 0.1px rgba(0, 0, 0, 0.1);
+}
+
+.menu .element:hover{
+	background: linear-gradient(to right, rgba(208, 208, 255, 0.5) , rgba(0, 0, 0, 0))
+}
+
+
+
+a{text-decoration: none; font-weight: bold; color:#555;}
+a:visited{color:#555;}
+
+/*PAGINATION*/
+.pagination{width:40%; margin:auto;}
+.pagination ul{list-style-type: none;}
+.pagination li{float: left; color: #555500 !important; padding: 3px; margin:5px;}
+.pagination li:hover{background-color: #FFFFAA; border: solid 2px #555500; border-radius:3px; margin:3px;}
+
+/*SEARCH*/
+.selector li:hover{
+	background: linear-gradient(to right, rgba(255, 192, 192, 1) , rgba(0, 0, 0, 0));
+	cursor: pointer;
+}

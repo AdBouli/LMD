@@ -1,0 +1,14 @@
+<?php
+require_once(CTRL.'crud.ctrl');
+
+
+class Lieux extends CRUD{
+
+	function __construct(){
+		parent::__construct();
+	}
+
+}
+
+
+?>

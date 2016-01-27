@@ -1,0 +1,94 @@
+<?php
+require_once(CORE.'controller.php');
+
+class Session extends Controller{
+
+	function __construct(){
+		parent::__construct();
+		$this->layout = 'default';
+		$this->loadModel('Users');
+	}
+
+	function index(){
+		$data = array();
+		//
+		$this->set($data);
+		$this->render('index');
+	}
+
+	function login(){
+		$data = array();
+		//
+		if(!empty($this->post['login']) && !empty($this->post['password'])){
+			$log = $this->Users->checkUser($this->post['login'], $this->post['password']);
+			if($log!=false){
+				$this->Users->read($log);
+				$_SESSION['user'] = array(
+					'login' => $this->Users->getlogin()
+				);
+				$page = 'login';
+			}else{
+				$page = 'index';
+			}
+		}else{
+			$page = 'index';
+
+		}
+		//
+		$this->set($data);
+		$this->render($page);
+	}
+
+	function logout(){
+		$data = array();
+		//
+		$_SESSION['user'] = null;
+		//
+		$this->set($data);
+		$this->render('logout');
+	}
+
+	function signin(){
+		$data = array();
+		//
+		if(!empty($this->post)){
+			$data['msg_exist'] = array();
+			//vérifications
+			if ($this->Users->checkExist('login', $this->post['login'])) { $data['msg_exist'][] = "Cet identifiant est déjà utilisé";}
+			if ($this->Users->checkExist('mail', $this->post['mail'])) { $data['msg_exist'][] = "Cette adresse mail est déjà utilisée";}
+			if ($this->post['password'] != $this->post['confirm_password']) { $data['msg_exist'][] = "Les mots de passes ne correspondent pas";}
+			unset($this->post['confirm_password']);
+			if(empty($data['msg_exist'])){
+				//setting datas
+				foreach ($this->post as $key => $value) {
+					$setter = 'set'.$key;
+					if($key == 'password'){
+						$value = md5($value);
+					}
+					$this->Users->$setter($value);
+				}
+				$this->msg_operation($this->Users->save());
+			}
+		}
+		//
+		$this->set($data);
+		$this->render('signin');
+	}
+
+
+
+	//génération du message utilisateur après opération sur la base de donnée
+	function msg_operation($result){
+		if($result>=1){
+			$data['msg'] = '<div class="success callout"> Opération effectuée avec succès!</div>';
+		}else{
+			//echec
+			$data['msg'] = '<div class="alert callout"> Echec de l\'opération.</div>';
+		}
+		$this->vars = array_merge($this->vars, $data);
+	}
+	
+}
+
+
+?>
